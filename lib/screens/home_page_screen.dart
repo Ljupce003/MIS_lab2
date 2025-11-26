@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mis_lab2/models/meal_category_model.dart';
+import 'package:mis_lab2/models/category_model.dart';
 import 'package:mis_lab2/service/api_service.dart';
 import '../widgets/category_grid.dart';
 
@@ -11,8 +11,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<MealCategoryModel> categories = [];
-  List<MealCategoryModel> searched = [];
+  List<CategoryModel> categories = [];
+  List<CategoryModel> searched = [];
   bool _loading = true;
   String _searchString = "";
   final searchController = TextEditingController();
@@ -28,7 +28,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Bakind App - 221563"),
+        title: const Text("Baking App - 221563"),
         centerTitle: true,
       ),
       body: ListView(
@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 )
               : (_searchString.isNotEmpty && searched.isEmpty)
               ? Center(child: Text("No Category with that name"))
-              : CategoriesGrid(categories: searched),
+              : CategoriesList(categories: searched),
 
           const SizedBox(height: 15),
 
@@ -80,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
     //   ApiService.fetchMealCategories,
     // );
 
-    List<MealCategoryModel> fetchedCategories =
+    List<CategoryModel> fetchedCategories =
         await ApiService.fetchMealCategories();
 
     setState(() {

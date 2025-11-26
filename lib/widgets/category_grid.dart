@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:mis_lab2/models/meal_category_model.dart';
+import 'package:mis_lab2/models/category_model.dart';
 
 import 'category_card.dart';
 
-class CategoriesGrid extends StatelessWidget{
+class CategoriesList extends StatelessWidget{
 
-  final List<MealCategoryModel> categories;
+  final List<CategoryModel> categories;
 
-  const CategoriesGrid({super.key, required this.categories});
+  const CategoriesList({super.key, required this.categories});
 
   @override
   Widget build(BuildContext context) {

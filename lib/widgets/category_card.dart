@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:mis_lab2/models/meal_category_model.dart';
+import 'package:mis_lab2/models/category_model.dart';
 
 class CategoryCard extends StatelessWidget {
-  final MealCategoryModel category;
+  final CategoryModel category;
 
   const CategoryCard({super.key, required this.category});
 
@@ -12,7 +12,7 @@ class CategoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () =>
-          Navigator.pushNamed(context, "/details", arguments: category),
+          Navigator.pushNamed(context, "/category", arguments: category),
       child: Card(
         child: ListTile(
           title: Text(category.name),

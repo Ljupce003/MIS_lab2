@@ -101,5 +101,28 @@ class ApiService {
     }
     return Future.value(null);
 
+  }static Future<MealModel?> fetchRandomMeal() async {
+
+    final mealByIdResponse = await http.get(Uri.parse("https://www.themealdb.com/api/json/v1/1/random.php"));
+
+    if(mealByIdResponse.statusCode == 200){
+      final mealByIdData = json.decode(mealByIdResponse.body);
+      if(mealByIdData['meals'] != null){
+        List<dynamic> mealsListData = mealByIdData['meals'];
+
+        if(mealsListData.isNotEmpty){
+          MealModel meal = MealModel.fromJson(mealsListData[0]);
+
+          return meal;
+        }
+
+      }
+
+
+    }
+    return Future.value(null);
+
   }
+
+
 }

@@ -7,10 +7,11 @@ class MealModel{
   String area;
   String instructions;
   String youtubeLink;
+  String imageUrl;
   List<String> ingredients;
   List<String> measures;
 
-  MealModel({required this.id,required this.name,required this.category,required this.area,required this.instructions, required this.youtubeLink,
+  MealModel({required this.id,required this.name,required this.category,required this.area,required this.instructions, required this.youtubeLink,required this.imageUrl,
       required this.ingredients,required this.measures});
 
   static MealModel fromJson(dynamic json){
@@ -34,7 +35,7 @@ class MealModel{
     int id = int.parse(json["idMeal"]);
 
     String youtubeLink = json["strYoutube"] ?? "";
-    var meal = MealModel(id: id, name: json["strMeal"], category: json["strCategory"],area: json["strArea"],instructions: json["strInstructions"], youtubeLink: youtubeLink, ingredients: ingredients, measures: measures);
+    var meal = MealModel(id: id, name: json["strMeal"], category: json["strCategory"],area: json["strArea"],instructions: json["strInstructions"], youtubeLink: youtubeLink,imageUrl: json["strMealThumb"], ingredients: ingredients, measures: measures);
 
     return meal;
   }

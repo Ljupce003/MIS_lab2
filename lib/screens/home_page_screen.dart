@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mis_lab2/models/category_model.dart';
+import 'package:mis_lab2/models/meal_model.dart';
 import 'package:mis_lab2/service/api_service.dart';
 import '../widgets/category_grid.dart';
 
@@ -23,12 +24,41 @@ class _MyHomePageState extends State<MyHomePage> {
     _fetchCategories();
   }
 
+  void _fetchRandomMeal(BuildContext context) async {
+    MealModel? randomMeal = await ApiService.fetchRandomMeal();
+    if (randomMeal != null) {
+      // Navigator.pop(context);
+      Navigator.pushNamed(
+          context,"/meal", arguments: randomMeal);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Failed to fetch random meal")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Baking App - 221563"),
+        backgroundColor: Theme
+            .of(context)
+            .colorScheme
+            .inversePrimary,
+        title: const Text("Baking App - 221563",style: TextStyle(fontSize: 16),),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: ElevatedButton(
+              onPressed: () => _fetchRandomMeal(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              ),
+              child: const Text("Get Random Meal"),
+            ),)
+        ],
         centerTitle: true,
       ),
       body: ListView(
@@ -47,12 +77,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
           _loading
               ? Center(
-                  child: SizedBox(
-                    width: 40,
-                    height: 40,
-                    child: CircularProgressIndicator(),
-                  ),
-                )
+            child: SizedBox(
+              width: 40,
+              height: 40,
+              child: CircularProgressIndicator(),
+            ),
+          )
               : (_searchString.isNotEmpty && searched.isEmpty)
               ? Center(child: Text("No Category with that name"))
               : CategoriesList(categories: searched),
@@ -81,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // );
 
     List<CategoryModel> fetchedCategories =
-        await ApiService.fetchMealCategories();
+    await ApiService.fetchMealCategories();
 
     setState(() {
       categories = fetchedCategories;

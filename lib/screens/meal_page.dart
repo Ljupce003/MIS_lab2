@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mis_lab2/models/meal_model.dart';
-import 'package:mis_lab2/service/api_service.dart';
 
 class MealDetailPage extends StatelessWidget {
   final MealModel? meal;

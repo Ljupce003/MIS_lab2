@@ -9,6 +9,19 @@ class MyHomePage extends StatefulWidget {
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
+
+  static void fetchRandomMeal(BuildContext context) async {
+    MealModel? randomMeal = await ApiService.fetchRandomMeal();
+    if (randomMeal != null) {
+      // Navigator.pop(context);
+      Navigator.pushNamed(
+          context,"/meal", arguments: randomMeal);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Failed to fetch random meal")),
+      );
+    }
+  }
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -24,43 +37,62 @@ class _MyHomePageState extends State<MyHomePage> {
     _fetchCategories();
   }
 
-  void _fetchRandomMeal(BuildContext context) async {
-    MealModel? randomMeal = await ApiService.fetchRandomMeal();
-    if (randomMeal != null) {
-      // Navigator.pop(context);
-      Navigator.pushNamed(
-          context,"/meal", arguments: randomMeal);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Failed to fetch random meal")),
-      );
-    }
+
+  void _seeFavoriteMeals(BuildContext context) {
+    Navigator.pushNamed(context, "/favorite_meals");
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme
-            .of(context)
-            .colorScheme
-            .inversePrimary,
-        title: const Text("Baking App - 221563",style: TextStyle(fontSize: 16),),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: ElevatedButton(
-              onPressed: () => _fetchRandomMeal(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              ),
-              child: const Text("Get Random Meal"),
-            ),)
-        ],
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         centerTitle: true,
-      ),
+        automaticallyImplyLeading: false,
+        title: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // First row: title
+            const Text(
+              "Baking App - 221563",
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 4), // spacing between rows
+            // Second row: buttons
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: ElevatedButton(
+                    onPressed: () => MyHomePage.fetchRandomMeal(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    ),
+                    child: const Text("Get Random Meal"),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: ElevatedButton(
+                    onPressed: () => _seeFavoriteMeals(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.redAccent,
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    ),
+                    child: const Text("See Favorite Meals"),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        toolbarHeight: 80, // adjust height to fit two rows
+      )
+      ,
       body: ListView(
         padding: const EdgeInsets.all(8),
         children: [
@@ -131,3 +163,4 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 }
+

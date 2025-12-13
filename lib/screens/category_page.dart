@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mis_lab2/models/category_model.dart';
 import 'package:mis_lab2/models/meal_by_category_model.dart';
+import 'package:mis_lab2/repository/favorites_local_repository.dart';
 import 'package:mis_lab2/service/api_service.dart';
 import 'package:mis_lab2/widgets/meal_by_category_grid.dart';
 
@@ -22,6 +23,8 @@ class MealByCategoryPageState extends State<MealByCategoryPage> {
 
   List<MealByCategoryModel> mealsByCategory = [];
   List<MealByCategoryModel> filtered = [];
+
+  final favoritesRepository = FavoritesLocalRepository();
 
   @override
   void initState() {
@@ -79,7 +82,7 @@ class MealByCategoryPageState extends State<MealByCategoryPage> {
                     ),
                   )
                 : Expanded(
-                    child: MealByCategoryGrid(mealsByCategory: filtered),
+                    child: MealByCategoryGrid(mealsByCategory: filtered,favoritesRepository: favoritesRepository),
                   ),
 
             const SizedBox(height: 5),

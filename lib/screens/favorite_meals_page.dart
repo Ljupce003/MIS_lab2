@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mis_lab2/models/meal_model.dart';
-import 'package:mis_lab2/repository/favorites_local_repository.dart';
+import 'package:mis_lab2/provider/favorite_meals_list.dart';
+// import 'package:mis_lab2/repository/favorites_local_repository.dart';
 import 'package:mis_lab2/widgets/favorite_meal_grid.dart';
+import 'package:provider/provider.dart';
 
 import '../service/api_service.dart';
 
@@ -13,10 +15,10 @@ class FavoriteMealsPage extends StatefulWidget {
 }
 
 class _FavoriteMealsPageState extends State<FavoriteMealsPage> {
-  late List<MealModel> favoriteMeals = [];
+  // late List<MealModel> favoriteMeals = [];
   bool _isLoading = true;
 
-  final favoritesRepository = FavoritesLocalRepository();
+  // final favoritesRepository = FavoritesLocalRepository();
 
   @override
   void initState() {
@@ -27,6 +29,9 @@ class _FavoriteMealsPageState extends State<FavoriteMealsPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    List<MealModel> favoriteMeals = Provider.of<FavoriteMealsList>(context,listen: true).getFavoriteMeals();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red.shade300,
@@ -74,7 +79,8 @@ class _FavoriteMealsPageState extends State<FavoriteMealsPage> {
   }
 
   void _fetchMeals() async {
-    List<int> favMealIds = await favoritesRepository.getFavorites();
+    List<int> favMealIds = Provider.of<FavoriteMealsList>(context,listen: false).getFavoriteMeals().map((m) => m.id).toList();
+    // List<int> favMealIds = await favoritesRepository.getFavorites();
     List<MealModel> favMeals = [];
     for (var mealId in favMealIds) {
       MealModel? meal = await ApiService.fetchMealById(mealId);
@@ -84,15 +90,17 @@ class _FavoriteMealsPageState extends State<FavoriteMealsPage> {
     }
 
     setState(() {
-      favoriteMeals = favMeals;
+      // favoriteMeals = favMeals;
       _isLoading = false;
     });
   }
 
   void _removeFavoriteMeal(MealModel meal) async{
-    await favoritesRepository.removeFavorite(meal.id);
-    setState(() {
-      favoriteMeals.remove(meal);
-    });
+    // await favoritesRepository.removeFavorite(meal.id);
+
+    Provider.of<FavoriteMealsList>(context,listen: false).removeFavoriteMeal(meal.id);
+    // setState(() {
+    //   favoriteMeals.remove(meal);
+    // });
   }
 }

@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:mis_lab2/models/meal_model.dart';
+import 'package:mis_lab2/provider/favorite_meals_list.dart';
 import 'package:mis_lab2/screens/category_page.dart';
 import 'package:mis_lab2/screens/favorite_meals_page.dart';
 import 'package:mis_lab2/screens/home_page_screen.dart';
@@ -8,15 +9,13 @@ import 'package:mis_lab2/screens/meal_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Firebase Login , for Later!!!!
   // FirebaseAuth.instance
@@ -41,7 +40,8 @@ Future<void> main() async {
   String? token = await FirebaseMessaging.instance.getToken();
   print("FCM Token: $token");
 
-  RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+  RemoteMessage? initialMessage = await FirebaseMessaging.instance
+      .getInitialMessage();
   if (initialMessage != null) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final data = initialMessage.data;
@@ -75,20 +75,40 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Lab1 ',
-      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),),
-      initialRoute: "/",
-      navigatorKey: navigatorKey,
-      routes: {
-        "/": (context) => const MyHomePage(),
-        "/category": (context) => MealByCategoryPage(),
-        "/favorite_meals": (context) => FavoriteMealsPage(),
-        "/meal": (context) => MealDetailPage(meal: ModalRoute.of(context)!.settings.arguments as MealModel?),
-      },
-
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: FavoriteMealsList())
+      ],
+      child: MaterialApp(
+        title: 'Lab1 ',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        ),
+        initialRoute: "/",
+        navigatorKey: navigatorKey,
+        routes: {
+          "/": (context) => const MyHomePage(),
+          "/category": (context) => MealByCategoryPage(),
+          "/favorite_meals": (context) => FavoriteMealsPage(),
+          "/meal": (context) => MealDetailPage(
+            meal: ModalRoute.of(context)!.settings.arguments as MealModel?,
+          ),
+        },
+      ),
     );
+
+    // return MaterialApp(
+    //   title: 'Lab1 ',
+    //   theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),),
+    //   initialRoute: "/",
+    //   navigatorKey: navigatorKey,
+    //   routes: {
+    //     "/": (context) => const MyHomePage(),
+    //     "/category": (context) => MealByCategoryPage(),
+    //     "/favorite_meals": (context) => FavoriteMealsPage(),
+    //     "/meal": (context) => MealDetailPage(meal: ModalRoute.of(context)!.settings.arguments as MealModel?),
+    //   },
+    //
+    // );
   }
 }
-
-

@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:mis_lab2/models/favorite_meal_model.dart';
 import 'package:mis_lab2/models/meal_by_category_model.dart';
 import 'package:mis_lab2/models/meal_model.dart';
-import 'package:mis_lab2/repository/favorites_local_repository.dart';
+import 'package:mis_lab2/provider/favorite_meals_list.dart';
+// import 'package:mis_lab2/repository/favorites_local_repository.dart';
 import 'package:mis_lab2/service/api_service.dart';
+import 'package:provider/provider.dart';
 
 class MealByCategoryCard extends StatefulWidget {
   final MealByCategoryModel mealByCategoryModel;
-  final FavoritesLocalRepository favoritesRepository;
+  // final FavoritesLocalRepository favoritesRepository;
 
+  // const MealByCategoryCard({
+  //   super.key,
+  //   required this.mealByCategoryModel,
+  //   required this.favoritesRepository,
+  // });
   const MealByCategoryCard({
     super.key,
     required this.mealByCategoryModel,
-    required this.favoritesRepository,
+    // required this.favoritesRepository,
   });
 
   @override
@@ -28,9 +36,10 @@ class _MealByCategoryCardState extends State<MealByCategoryCard> {
   }
 
   void _checkIfFavorite() async {
-    final fav = await widget.favoritesRepository.isFavorite(
-      widget.mealByCategoryModel.mealId,
-    );
+    final fav = Provider.of<FavoriteMealsList>(context,listen: false).isFavorite(widget.mealByCategoryModel.mealId);
+    // final fav = await widget.favoritesRepository.isFavorite(
+    //   widget.mealByCategoryModel.mealId,
+    // );
     setState(() {
       isFavorite = fav;
     });
@@ -38,13 +47,18 @@ class _MealByCategoryCardState extends State<MealByCategoryCard> {
 
   void _toggleFavorite() async {
     if (isFavorite) {
-      await widget.favoritesRepository.removeFavorite(
-        widget.mealByCategoryModel.mealId,
-      );
+      Provider.of<FavoriteMealsList>(context,listen: false).removeFavoriteMeal(widget.mealByCategoryModel.mealId);
+      // await widget.favoritesRepository.removeFavorite(
+      //   widget.mealByCategoryModel.mealId,
+      // );
     } else {
-      await widget.favoritesRepository.addFavorite(
-        widget.mealByCategoryModel.mealId,
-      );
+      MealModel? meal = await ApiService.fetchMealById(widget.mealByCategoryModel.mealId);
+      if (meal != null) {
+        Provider.of<FavoriteMealsList>(context,listen: false).addFavoriteMeal(meal);
+      }
+      // await widget.favoritesRepository.addFavorite(
+      //   widget.mealByCategoryModel.mealId,
+      // );
     }
     setState(() {
       isFavorite = !isFavorite;
